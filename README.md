@@ -151,113 +151,151 @@ where $\Phi$ is the standard normal CDF. For nonlinear limit-state functions thi
 ---
 ### 3.4 Simulation-Based Estimation
 
-**Crude Monte Carlo (CMC)**
+#### Crude Monte Carlo (CMC)
 
-The unbiased direct estimator is
+The unbiased direct estimator is:
 
-$$
-\hat{P}_f^{\text{CMC}}
-=
-\frac{1}{N}
-\sum_{i=1}^{N}
-\mathbf{1}\!\left[g(\mathbf{X}^{(i)}) \leq 0\right],
-\qquad
-\text{CoV}
-\approx
-\frac{1}{\sqrt{N P_f}}.
-$$
-
-For rare events, such as \(P_f \sim 10^{-5}\), achieving \(\text{CoV} \leq 10\%\) requires approximately \(N \geq 10^7\) samples, making crude MCS impractical without variance reduction.
-
-**Importance Sampling — shifted proposal**
-
-Samples are drawn from a proposal density \(h(\mathbf{x})\) and weighted by the likelihood ratio
-
-$$
-w(\mathbf{x})
-=
-\frac{f_{\mathbf{X}}(\mathbf{x})}{h(\mathbf{x})}.
-$$
-
-The importance sampling estimator is
-
-$$
-\hat{P}_f^{\text{IS}}
+```math
+\hat{P}_f^{\mathrm{CMC}}
 =
 \frac{1}{N}
 \sum_{i=1}^{N}
 \mathbf{1}\!\left[g(\mathbf{X}^{(i)}) \leq 0\right]
-w(\mathbf{X}^{(i)}).
-$$
+```
 
-The proposal is the original distribution shifted to be centred at the design point \(\mathbf{u}^*\) in standard normal space. For a Gaussian shift,
+The approximate coefficient of variation is:
 
-$$
+```math
+\mathrm{CoV}
+\approx
+\frac{1}{\sqrt{N P_f}}
+```
+
+For rare events, such as (P_f \sim 10^{-5}), achieving (\mathrm{CoV} \leq 10%) requires approximately (N \geq 10^7) samples. This makes crude Monte Carlo simulation impractical without variance reduction.
+
+---
+
+#### Importance Sampling — Shifted Proposal
+
+Samples are drawn from a proposal density (h(\mathbf{x})) and weighted by the likelihood ratio:
+
+```math
+w(\mathbf{x})
+=
+\frac{f_{\mathbf{X}}(\mathbf{x})}{h(\mathbf{x})}
+```
+
+The importance sampling estimator is:
+
+```math
+\hat{P}_f^{\mathrm{IS}}
+=
+\frac{1}{N}
+\sum_{i=1}^{N}
+\mathbf{1}\!\left[g(\mathbf{X}^{(i)}) \leq 0\right]
+w(\mathbf{X}^{(i)})
+```
+
+The proposal is the original distribution shifted to be centred at the design point (\mathbf{u}^*) in standard normal space. For a Gaussian shift, the log-weight is:
+
+```math
 \ln w(\mathbf{u})
 =
 (\mathbf{u}^*)^\top \mathbf{u}
 -
 \frac{1}{2}
-\|\mathbf{u}^*\|^2.
-$$
+\|\mathbf{u}^*\|^2
+```
 
-**IS with optimised normal proposal**
+---
+
+#### Importance Sampling with Optimised Normal Proposal
 
 A normal proposal is used in standard normal space:
 
-$$
+```math
 h(\mathbf{u})
 =
-\mathcal{N}(\mathbf{u}^*,\boldsymbol{\Sigma}_h),
-$$
+\mathcal{N}(\mathbf{u}^*,\boldsymbol{\Sigma}_h)
+```
 
-where \(\boldsymbol{\Sigma}_h\) is chosen to minimise the importance sampling second moment on a pilot sample:
+where (\boldsymbol{\Sigma}_h) is chosen to minimise the importance sampling second moment on a pilot sample:
 
-$$
-\mathbb{E}_h\left[\mathbf{1}^2 w^2\right].
-$$
+```math
+\mathbb{E}_h
+\left[
+\mathbf{1}^2 w^2
+\right]
+```
 
-The log-weight is
+The log-weight is:
 
-$$
+```math
 \ln w(\mathbf{u})
 =
--\frac{1}{2}\|\mathbf{u}\|^2
+-\frac{1}{2}
+\|\mathbf{u}\|^2
 +
 \frac{1}{2}
 (\mathbf{u}-\mathbf{u}^*)^\top
 \boldsymbol{\Sigma}_h^{-1}
 (\mathbf{u}-\mathbf{u}^*)
 +
-\frac{1}{2}\ln|\boldsymbol{\Sigma}_h|.
-$$
+\frac{1}{2}
+\ln
+\left|
+\boldsymbol{\Sigma}_h
+\right|
+```
 
-**Adaptive Importance Sampling (AIS)**
+---
 
-Starting from the distribution mean, the proposal is updated over successive rounds using the failure-weighted mean and covariance:
+#### Adaptive Importance Sampling (AIS)
 
-$$
+Starting from the distribution mean, the proposal distribution is updated over successive rounds using the failure-weighted mean and covariance.
+
+The updated proposal mean is:
+
+```math
 \boldsymbol{\mu}_h^{(r+1)}
 =
 \frac{
-\sum_i w_i \mathbf{1}_i \mathbf{u}^{(i)}
+\sum_i
+w_i
+\mathbf{1}_i
+\mathbf{u}^{(i)}
 }{
-\sum_i w_i \mathbf{1}_i
-},
-$$
+\sum_i
+w_i
+\mathbf{1}_i
+}
+```
 
-$$
+The updated proposal covariance is:
+
+```math
 \boldsymbol{\Sigma}_h^{(r+1)}
 =
 \frac{
 \sum_i
-w_i \mathbf{1}_i
-\left(\mathbf{u}^{(i)}-\boldsymbol{\mu}_h^{(r+1)}\right)
-\left(\mathbf{u}^{(i)}-\boldsymbol{\mu}_h^{(r+1)}\right)^\top
+w_i
+\mathbf{1}_i
+\left(
+\mathbf{u}^{(i)}
+-
+\boldsymbol{\mu}_h^{(r+1)}
+\right)
+\left(
+\mathbf{u}^{(i)}
+-
+\boldsymbol{\mu}_h^{(r+1)}
+\right)^\top
 }{
-\sum_i w_i \mathbf{1}_i
-}.
-$$
+\sum_i
+w_i
+\mathbf{1}_i
+}
+```
 
 ---
 
