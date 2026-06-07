@@ -568,6 +568,6 @@ Rubinstein, R. Y. & Kroese, D. P. (2016). *Simulation and the Monte Carlo Method
   <sub>
     Oluwakorede Hezekiah Oyewole &nbsp;·&nbsp;
     MSc in Mechanics of Sustainable Materials and Structures &nbsp;·&nbsp;
-    University of Trento &nbsp;·&nbsp; 2025
+    University of Trento &nbsp;·&nbsp; 2026
   </sub>
 </p>
